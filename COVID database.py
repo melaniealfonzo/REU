@@ -9,10 +9,8 @@ import os
 df = pd.read_csv('covid.csv') 
 df = df.iloc[:,0:33]
 df['symptoms'] = df['symptoms'].str.replace(';',',')
-x = df['symptoms'].str.split(',',expand=True).stack().unique()
+x = df['symptoms'].str.split(',',expand=True).stack().str.strip().unique()
 
-#print(df.symptoms.unique())
-#print(x)
 print(x)
 print(len(x))
 
