@@ -30,7 +30,7 @@
   "esophageal reflux":"gastrointestinal", "sore body":"weakness", "cold":"respiratory symptoms", "acute pharyngitis":"respiratory symptoms", "mild cough":"cough",
   "low fever 37.0 ℃":"fever", "low fever (37.4 ℃)":"fever", "low fever (37.2 ° C)":"fever",
   "nasal discharge":"respiratory symptoms", "fever (37.4 ° C)":"fever", "fever (37.8 ℃)":"fever", "fever (38-39 ° C)":"fever",
-  "fever 38.1 ℃ Cough":"fever", "Discharge":"respiratory symptoms", "phlegm":"respiratory symptoms", "fever 37.8 ℃":"fever", $"rever",
+  "fever 38.1 ℃ Cough":"fever", "Discharge":"respiratory symptoms", "phlegm":"respiratory symptoms", "fever 37.8 ℃":"fever", "rever":"fever",
   "fever 37.1 ℃":"fever", "couh":"cough", "fever 38.3 ℃":"fever", "toothache":"weakness", "fever 37.5":"fever", "Fever":"fever",
   "fever 37.2":"fever", "fever (38-39 ℃)":"fever", "fever (38 ℃)":"fever", "fever (38.3 ℃)":"fever",
   "fever (38.2 ℃)":"fever", "fever (39 ° C)":" high fever", "fever (37.4 ℃)":"fever", "fever (40.3 ℃)":"high fever",
