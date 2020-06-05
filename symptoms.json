@@ -1,5 +1,5 @@
-#edited to include asymptomatic system column and changed vomitting to gastrointestinal
-#7 columns (fever, respiratory symptoms, headache/nausea, cough,  weakness, gastrointestinal, chesting symptoms,asymptomatic)
+#edited to include asymptomatic and high fever column and changed vomitting to gastrointestinal
+#8 columns (fever, respiratory symptoms, headache/nausea, cough,  weakness, gastrointestinal, chesting symptoms, asymptomatic, high fever)
 #"yes"
 {"pneumonia":"respiratory symptoms", "fever":"fever", "cough":"cough", "fatigue":"weakness",
  "headache":"headache/nausea", "respiratory symptoms":"respiratory symptoms", "muscular soreness":"weakness",
