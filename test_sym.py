@@ -38,10 +38,10 @@ di = {"pneumonia":"respiratory symptoms", "fever":"fever", "cough":"cough", "fat
   "difficulty walking":"weakness", "Sputum":"respiratory symptoms", "cough symptoms":"cough", "fever \(37.0 ℃\)":"fever",
   "fever \(38.7 ℃\)":"fever", "fever \(37.5 ℃ ～ 38.0 ℃\)":"fever",  "fever and cough":"fever"}
   # "rever","no respiratory symptoms","mild","no serious symptoms",
-  dc = {"hypertriglyceridemia":"others", "history of hypertension":"hypertension", "type 2 diabetes":"diabetes",
- "coronary heart disease for which a stent had been implanted":"others",
+  dc = {"hypertriglyceridemia":"cardiovascular disease", "history of hypertension":"hypertension", "type 2 diabetes":"diabetes",
+ "coronary heart disease for which a stent had been implanted":"cardiovascular disease",
  "and lung cancer":"lung disease", "hypertension":"hypertension", "diabetes":"diabetes", "asthma"："lung disease",
  "prostate hypertrophy":"others",
  "thought to have had other pre-existing conditions":"others", "COPD":"lung disease", "lung cancer":"lung disease",
  "type 2 diabetes for 30+ years":"diabetes", "hypertension for 9 years":"hypertension",
- "coronary bypass surgery for 2 years":"others",, "HIV positive":"others", "hepatitis B":"others"}
+ "coronary bypass surgery for 2 years":"others",, "HIV positive":"HIV", "hepatitis B":"HBV"}
