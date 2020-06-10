@@ -84,3 +84,12 @@ w = y - ncount
 print('there are ',w, ' cases with data in latestdata.csv excluding empty rows')
 q = lcount / w * 100
 print('the death rate in this file (latestdata.csv) is',q, 'percent')
+
+
+scount = 0
+for s in dl['symptoms']:
+    if pd.isnull(s) == True:
+        scount += 0
+    else:
+        scount +=1
+print('in latestdata.csv, ',scount, 'rows have symptoms')   
