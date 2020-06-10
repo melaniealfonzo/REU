@@ -29,7 +29,7 @@ for i in df['outcome']:
         count += 0
     
 #print(count)
-print('there are', count, 'deaths in file covid.csv with', x, 'cases')  
+#print('there are', count, 'deaths in file covid.csv with', x, 'cases')  
 
 
  #this file has 2000000 cases
@@ -49,6 +49,7 @@ for col in dl:
 
 #print(dl['outcome'].unique())
 
+list_dead = ['died','death','dead','Death','Died','Dead','Deceased']
 lcount = 0
 ncount = 0
 ocount = 0
@@ -72,13 +73,14 @@ for i in dl['outcome']:
     else:
         ocount += 1
     
+print('there are', count, 'deaths in file covid.csv with', x, 'cases') 
 #print(lcount)
 print('there are', lcount, 'deaths in file latestdata.csv with', y, 'cases')
-print(ncount)
-print(ocount)
+print('there are ',ncount, 'empty rows in outcome column in latestdata.csv')
+print(ocount,' people survived in various conditions in latestdata.csv file')
 
 
 w = y - ncount
-print(w)
+print('there are ',w, ' cases with data in latestdata.csv excluding empty rows')
 q = lcount / w * 100
-print(q)
+print('the death rate in this file (latestdata.csv) is',q, 'percent')
