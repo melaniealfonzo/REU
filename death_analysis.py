@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Jun 10 12:04:26 2020
+
+@author: MelanieAlfonzo
+"""
+
 import numpy as np
 import pandas as pd
 import os
@@ -44,7 +52,8 @@ lcol_name = []
 for col in dl:
     #print(col)
     lcol_name.append(col)
-#print(lcol_name) 
+print(lcol_name) 
+print('there are', len(lcol_name), 'coolumns in latestdata.csv')
 
 
 #print(dl['outcome'].unique())
@@ -92,4 +101,40 @@ for s in dl['symptoms']:
         scount += 0
     else:
         scount +=1
-print('in latestdata.csv, ',scount, 'rows have symptoms')   
+print('in latestdata.csv, ',scount, 'rows have symptoms')    
+
+
+ds_count = 0
+for s in dl['date_onset_symptoms']:
+   if pd.isnull(s) == True:
+        ds_count += 0
+   else:
+        ds_count +=1
+print('in latestdata.csv, ',ds_count, 'rows have symptom onset datws') 
+
+
+cdb_count = 0
+for s in dl['chronic_disease_binary']:
+   if pd.isnull(s) == True:
+        cdb_count += 0
+   elif s == 0:
+        cdb_count += 0
+   else:
+        cdb_count +=1
+print('in latestdata.csv, ',cdb_count, 'rows have chronic diseases according to binary')  
+
+
+cd_count = 0
+for s in dl['chronic_disease']:
+   if pd.isnull(s) == True:
+        cd_count += 0
+   else:
+        cd_count +=1
+print('in latestdata.csv, ',cd_count, 'rows have chronic diseases') 
+
+count_c = 0
+for c in dl['chronic_disease_binary']:
+    if c == 1:
+        count_c += 1
+print(count_c)
+    
