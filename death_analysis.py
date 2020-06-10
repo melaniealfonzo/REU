@@ -65,6 +65,8 @@ for i in dl['outcome']:
         lcount += 1
     elif i == 'Dead':
         lcount += 1
+    elif i == 'Deceased':
+        lcount += 1
     elif pd.isnull(i) == True:
         ncount += 1
     else:
