@@ -205,7 +205,7 @@ print("Recall:",metrics.recall_score(y_test, tree))
 
 #svm one class classification
 from sklearn.svm import OneClassSVM
-clf = OneClassSVM(gamma='auto').fit(x_train)
+clf = OneClassSVM(gamma='auto').fit(x_train,y_train)
 c = clf.predict(x_test)
 #clf.score_samples(x_train)
 
