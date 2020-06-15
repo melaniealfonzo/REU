@@ -110,7 +110,7 @@ def preprocessData(df):
     
     return patiant_df
     
-patient_file = "/Users/MelanieAlfonzo/Desktop/patient records.csv"
+patient_file = "patient records.csv"
 df = pd.read_csv(patient_file)
 patient_df = preprocessData(df)
 patient_df = patient_df.drop(['age_is_number', 'AgeRange'], axis=1)
@@ -189,23 +189,9 @@ print("Recall:",metrics.recall_score(y_test, rf_pred.round()))
 
 
 
-#make a decision tree and train
-from sklearn.tree import DecisionTreeClassifier
-tree = DecisionTreeClassifier#(random_state = RSEED)
-tree.fit(x_train, y_train)
-
-#use confusion matrix to get all 3
-from sklearn import metrics
-cnf_matrix = metrics.confusion_matrix(y_test, model)
-cnf_matrix
-
-print("Accuracy:",metrics.accuracy_score(y_test, tree))
-print("Precision:",metrics.precision_score(y_test, tree))
-print("Recall:",metrics.recall_score(y_test, tree))
-
 #svm one class classification
 from sklearn.svm import OneClassSVM
-clf = OneClassSVM(gamma='auto').fit(x_train,y_train)
+clf = OneClassSVM(gamma='auto').fit(x_train)
 c = clf.predict(x_test)
 #clf.score_samples(x_train)
 
