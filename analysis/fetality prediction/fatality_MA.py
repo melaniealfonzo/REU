@@ -156,6 +156,14 @@ print("Precision:",metrics.precision_score(y_test, predictions))
 print("Recall:",metrics.recall_score(y_test, predictions))
 
 
+tn, fp, fn, tp = confusion_matrix(y_test, predictions).ravel()
+specificity = tn / (tn+fp)
+print('specificity', specificity)
+
+sensitivity  = tp / (fn + tp)
+print('sensitivity:', sensitivity)
+
+
 #SVM 
 from sklearn import svm
 clf = svm.SVC(kernel='linear')
@@ -170,6 +178,13 @@ print("for SVM")
 print("Accuracy:",metrics.accuracy_score(y_test, svm_pred))
 print("Precision:",metrics.precision_score(y_test, svm_pred))
 print("Recall:",metrics.recall_score(y_test, svm_pred))
+
+tn, fp, fn, tp = confusion_matrix(y_test, svm_pred).ravel()
+specificity = tn / (tn+fp)
+print('specificity:', specificity)
+
+sensitivity  = tp / (fn + tp)
+print('sensitivity:', sensitivity)
 
 
 # random forest 
@@ -187,19 +202,34 @@ print("Accuracy:",metrics.accuracy_score(y_test, rf_pred.round()))
 print("Precision:",metrics.precision_score(y_test, rf_pred.round()))
 print("Recall:",metrics.recall_score(y_test, rf_pred.round()))
 
+tn, fp, fn, tp = confusion_matrix(y_test, rf_pred.round()).ravel()
+specificity = tn / (tn+fp)
+print('specificity:', specificity)
+
+sensitivity  = tp / (fn + tp)
+print('sensitivity:', sensitivity)
+
 
 
 #svm one class classification
 from sklearn.svm import OneClassSVM
 clf = OneClassSVM(gamma='auto').fit(x_train)
 c = clf.predict(x_test)
+s = clf.score_samples(x_test)
 #clf.score_samples(x_train)
 
 
 #use confusion matrix to get all 3
 from sklearn import metrics
-cnf_matrix = metrics.confusion_matrix(y_test, c)
+cnf_matrix = metrics.confusion_matrix(y_test, c.round())
 print('for SVM one class')
-print("Accuracy:",metrics.accuracy_score(y_test, c))
+print("Accuracy:",metrics.accuracy_score(y_test, c.round()))
 print("Precision:",metrics.precision_score(y_test, c, average=None))
 print("Recall:",metrics.recall_score(y_test, c, average=None))
+
+tn, fp, fn, tp = confusion_matrix(y_test, c).ravel()
+specificity = tn / (tn+fp)
+print('specificity:', specificity)
+
+sensitivity  = tp / (fn + tp)
+print('sensitivity:', sensitivity)
