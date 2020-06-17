@@ -155,6 +155,7 @@ print("Accuracy:",metrics.accuracy_score(y_test, predictions))
 print("Precision:",metrics.precision_score(y_test, predictions))
 print("Recall:",metrics.recall_score(y_test, predictions))
 
+lr_a = metrics.accuracy_score(y_test, predictions)
 
 tn, fp, fn, tp = confusion_matrix(y_test, predictions).ravel()
 specificity = tn / (tn+fp)
@@ -182,12 +183,13 @@ print("Accuracy:",metrics.accuracy_score(y_test, svm_pred))
 print("Precision:",metrics.precision_score(y_test, svm_pred))
 print("Recall:",metrics.recall_score(y_test, svm_pred))
 
+a_svm = metrics.accuracy_score(y_test, svm_pred)
 tn, fp, fn, tp = confusion_matrix(y_test, svm_pred).ravel()
-specificity = tn / (tn+fp)
-print('specificity:', specificity)
+s_specificity = tn / (tn+fp)
+print('specificity:', s_specificity)
 
-sensitivity  = tp / (fn + tp)
-print('sensitivity:', sensitivity)
+s_sensitivity  = tp / (fn + tp)
+print('sensitivity:', s_sensitivity)
 
 from sklearn.metrics import roc_auc_score
 roc_svm=roc_auc_score(y_test, svm_pred)
@@ -208,12 +210,13 @@ print("Accuracy:",metrics.accuracy_score(y_test, rf_pred.round()))
 print("Precision:",metrics.precision_score(y_test, rf_pred.round()))
 print("Recall:",metrics.recall_score(y_test, rf_pred.round()))
 
+rf_a = metrics.accuracy_score(y_test, rf_pred.round())
 tn, fp, fn, tp = confusion_matrix(y_test, rf_pred.round()).ravel()
-specificity = tn / (tn+fp)
-print('specificity:', specificity)
+rf_specificity = tn / (tn+fp)
+print('specificity:', rf_specificity)
 
-sensitivity  = tp / (fn + tp)
-print('sensitivity:', sensitivity)
+rf_sensitivity  = tp / (fn + tp)
+print('sensitivity:', rf_sensitivity)
 
 from sklearn.metrics import roc_auc_score
 roc_rf=roc_auc_score(y_test, rf_pred.round())
@@ -245,3 +248,21 @@ print("Accuracy:",metrics.accuracy_score(y_test, c.round()))
 from sklearn.metrics import roc_auc_score
 roc_one=roc_auc_score(y_test, c.round())
 print('AUC: ',roc_one)
+
+
+#make a bar chart
+import matplotlib.pyplot as plt; plt.rcdefaults()
+import numpy as np
+import matplotlib.pyplot as plt
+
+#make a bar chart
+import matplotlib.pyplot as plt; plt.rcdefaults()
+import numpy as np
+import matplotlib.pyplot as plt
+
+#plt.bar(['LR accuracy',' LR specificity',' LR sensitivity','SVM accuracy',' SVM specificity',' SVM sensitivity','RF accuracy',' RF specificity',' RF sensitivity'],[lr_a, specificity, sensitivity,a_svm, s_specificity, s_sensitivity,rf_a, rf_specificity, rf_sensitivity],align='edge', width=0.3)
+
+x_labels = ['LR accuracy',' LR specificity',' LR sensitivity','SVM accuracy',' SVM specificity',' SVM sensitivity','RF accuracy',' RF specificity',' RF sensitivity']
+y_values = [lr_a, specificity, sensitivity,a_svm, s_specificity, s_sensitivity,rf_a, rf_specificity, rf_sensitivity]
+
+plt.bar(x_labels,y_values, align='edge', width=0.5)
