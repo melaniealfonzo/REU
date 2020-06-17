@@ -263,3 +263,4 @@ x_labels = ['LR accuracy',' LR specificity',' LR sensitivity','SVM accuracy',' S
 y_values = [lr_a, specificity, sensitivity,a_svm, s_specificity, s_sensitivity,rf_a, rf_specificity, rf_sensitivity]
 
 plt.bar(x_labels,y_values, align='edge', width=0.3)
+plt.xticks(rotation='vertical')
