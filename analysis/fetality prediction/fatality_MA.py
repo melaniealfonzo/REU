@@ -163,6 +163,9 @@ print('specificity', specificity)
 sensitivity  = tp / (fn + tp)
 print('sensitivity:', sensitivity)
 
+from sklearn.metrics import roc_auc_score
+roc_lr=roc_auc_score(y_test, predictions)
+print('AUC: ',roc_lr)
 
 #SVM 
 from sklearn import svm
@@ -186,6 +189,9 @@ print('specificity:', specificity)
 sensitivity  = tp / (fn + tp)
 print('sensitivity:', sensitivity)
 
+from sklearn.metrics import roc_auc_score
+roc_svm=roc_auc_score(y_test, svm_pred)
+print('AUC: ',roc_svm)
 
 # random forest 
 from sklearn.ensemble import RandomForestRegressor
@@ -209,7 +215,9 @@ print('specificity:', specificity)
 sensitivity  = tp / (fn + tp)
 print('sensitivity:', sensitivity)
 
-
+from sklearn.metrics import roc_auc_score
+roc_rf=roc_auc_score(y_test, rf_pred.round())
+print('AUC: ',roc_rf)
 
 #svm one class classification
 from sklearn.svm import OneClassSVM
@@ -224,12 +232,16 @@ from sklearn import metrics
 cnf_matrix = metrics.confusion_matrix(y_test, c.round())
 print('for SVM one class')
 print("Accuracy:",metrics.accuracy_score(y_test, c.round()))
-print("Precision:",metrics.precision_score(y_test, c, average=None))
-print("Recall:",metrics.recall_score(y_test, c, average=None))
+#print("Precision:",metrics.precision_score(y_test, c, average='micro'))
+#print("Recall:",metrics.recall_score(y_test, c, average='micro'))
 
-tn, fp, fn, tp = confusion_matrix(y_test, c).ravel()
-specificity = tn / (tn+fp)
-print('specificity:', specificity)
+#tn, fp, fn, tp = confusion_matrix(y_test, c).ravel()
+#specificity = tn / (tn+fp)
+#print('specificity:', specificity)
 
-sensitivity  = tp / (fn + tp)
-print('sensitivity:', sensitivity)
+#sensitivity  = tp / (fn + tp)
+#print('sensitivity:', sensitivity)
+
+from sklearn.metrics import roc_auc_score
+roc_one=roc_auc_score(y_test, c.round())
+print('AUC: ',roc_one)
