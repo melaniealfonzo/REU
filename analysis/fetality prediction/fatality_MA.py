@@ -44,14 +44,29 @@ def correlation_analysis(df):
     plt.show()
     
 def perpareTrainData(df):
+    '''
     df['date_confirmation']= pd.to_datetime(df['date_confirmation']) 
     select_day = datetime.datetime(2020, 5, 29) 
     train_df = df.loc[(df.date_confirmation <= select_day)]
     test_df = df.loc[(df.date_confirmation > select_day)]
+    '''
     
-    x_train_df =  train_df[['AgeRange_code','latitude', 'longitude', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary']]
-    x_test_df =  test_df[['AgeRange_code','latitude', 'longitude', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary']]
+    df['date_confirmation']= pd.to_datetime(df['date_confirmation']) 
+    select_day = datetime.datetime(2020, 5, 29) 
+    non_test_df = df.loc[(df.date_confirmation <= select_day)]
+    test_df = df.loc[(df.date_confirmation > select_day)]
     
+    select_day2 = datetime.datetime(2020, 5, 25) 
+    train_df = non_test_df.loc[(non_test_df.date_confirmation <= select_day2)]
+    valid_df = non_test_df.loc[(non_test_df.date_confirmation > select_day2)]
+    
+    if data_process == 1:
+        x_train_df =  train_df[['AgeRange_code','latitude', 'longitude', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary']]
+        x_test_df =  test_df[['AgeRange_code','latitude', 'longitude', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary']]
+    else:
+        x_train_df =  train_df[['age','latitude', 'longitude', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary']]
+        x_test_df =  test_df[['age','latitude', 'longitude', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary']]
+
     y_train_df =  train_df[['death']]
     y_test_df = test_df[['death']]
     
@@ -85,7 +100,7 @@ def encode_age_range(data):
     else:
         return -1
     
-def preprocessData(df):
+def preprocessData_1(df):
     
     df['age_is_number'] = df.age.apply(is_int_number) 
     #keep age range and drop float ages 
@@ -109,30 +124,27 @@ def preprocessData(df):
     patiant_df = patiant_df.drop(patiant_df[patiant_df.AgeRange_code == -1].index)
     
     return patiant_df
+
+def preprocessData_2(df):
     
+    df['age_is_number'] = df.age.apply(is_int_number) 
+    #convert age to age_range
+    age_number_df = df.loc[df['age_is_number'] == 1]
+    return age_number_df
+ 
 patient_file = "patient records.csv"
 df = pd.read_csv(patient_file)
-patient_df = preprocessData(df)
-patient_df = patient_df.drop(['age_is_number', 'AgeRange'], axis=1)
+
+data_process = 2
+if data_process == 1:
+    patient_df = preprocessData(df)
+    patient_df = patient_df.drop(['age_is_number', 'AgeRange'], axis=1)
+else:
+    patient_df = preprocessData_2(df)
+    patient_df = patient_df.drop(['age_is_number'], axis=1)
+    
 #correlation_analysis(patient_df)
 x_train, x_test, y_train, y_test = perpareTrainData(patient_df)
-
-
-model = 'RF'
-if model == 'RF':
-    
-    #from sklearn.preprocessing import RobustScaler
-    #transformer = RobustScaler().fit(x_train)
-    #x_train = transformer.transform(x_train)  
-    #x_test = transformer.transform(x_test)
-    
-    from sklearn.ensemble import RandomForestClassifier
-    clf = RandomForestClassifier(n_estimators=100, max_depth=2,random_state=0)
-    clf.fit(x_train, y_train)
-    
-#metrics
-pred_y_train = clf.predict(x_train)
-tn, fp, fn, tp = confusion_matrix(y_train, pred_y_train,).ravel()
 
 
 #logistic regression
@@ -156,6 +168,14 @@ print("Precision:",metrics.precision_score(y_test, predictions))
 print("Recall:",metrics.recall_score(y_test, predictions))
 
 
+tn, fp, fn, tp = confusion_matrix(y_test, predictions).ravel()
+specificity = tn / (tn+fp)
+print('specificity', specificity)
+
+sensitivity  = tp / (fn + tp)
+print('sensitivity:', sensitivity)
+
+
 #SVM 
 from sklearn import svm
 clf = svm.SVC(kernel='linear')
@@ -170,6 +190,13 @@ print("for SVM")
 print("Accuracy:",metrics.accuracy_score(y_test, svm_pred))
 print("Precision:",metrics.precision_score(y_test, svm_pred))
 print("Recall:",metrics.recall_score(y_test, svm_pred))
+
+tn, fp, fn, tp = confusion_matrix(y_test, svm_pred).ravel()
+specificity = tn / (tn+fp)
+print('specificity:', specificity)
+
+sensitivity  = tp / (fn + tp)
+print('sensitivity:', sensitivity)
 
 
 # random forest 
@@ -187,19 +214,61 @@ print("Accuracy:",metrics.accuracy_score(y_test, rf_pred.round()))
 print("Precision:",metrics.precision_score(y_test, rf_pred.round()))
 print("Recall:",metrics.recall_score(y_test, rf_pred.round()))
 
+tn, fp, fn, tp = confusion_matrix(y_test, rf_pred.round()).ravel()
+specificity = tn / (tn+fp)
+print('specificity:', specificity)
+
+sensitivity  = tp / (fn + tp)
+print('sensitivity:', sensitivity)
 
 
+'''
 #svm one class classification
 from sklearn.svm import OneClassSVM
 clf = OneClassSVM(gamma='auto').fit(x_train)
 c = clf.predict(x_test)
+s = clf.score_samples(x_test)
 #clf.score_samples(x_train)
 
 
 #use confusion matrix to get all 3
 from sklearn import metrics
-cnf_matrix = metrics.confusion_matrix(y_test, c)
+cnf_matrix = metrics.confusion_matrix(y_test, c.round())
 print('for SVM one class')
-print("Accuracy:",metrics.accuracy_score(y_test, c))
+print("Accuracy:",metrics.accuracy_score(y_test, c.round()))
 print("Precision:",metrics.precision_score(y_test, c, average=None))
 print("Recall:",metrics.recall_score(y_test, c, average=None))
+
+tn, fp, fn, tp = confusion_matrix(y_test, c).ravel()
+specificity = tn / (tn+fp)
+print('specificity:', specificity)
+
+sensitivity  = tp / (fn + tp)
+print('sensitivity:', sensitivity)
+'''
+
+
+'''
+for logistic regression:
+Accuracy: 0.9890003626254079
+Precision: 0.34375
+Recall: 0.13580246913580246
+specificity 0.9974365234375
+sensitivity: 0.13580246913580246
+
+
+for SVM
+Accuracy: 0.9903299891212377
+Precision: 0.5263157894736842
+Recall: 0.12345679012345678
+specificity: 0.9989013671875
+sensitivity: 0.12345679012345678
+
+
+for random forrest:
+Accuracy: 0.986703735041702
+Precision: 0.23636363636363636
+Recall: 0.16049382716049382
+specificity: 0.994873046875
+sensitivity: 0.16049382716049382
+'''
