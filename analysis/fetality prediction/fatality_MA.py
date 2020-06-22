@@ -137,7 +137,7 @@ df = pd.read_csv(patient_file)
 
 data_process = 2
 if data_process == 1:
-    patient_df = preprocessData(df)
+    patient_df = preprocessData_1(df)
     patient_df = patient_df.drop(['age_is_number', 'AgeRange'], axis=1)
 else:
     patient_df = preprocessData_2(df)
@@ -167,6 +167,18 @@ print("Accuracy:",metrics.accuracy_score(y_test, predictions))
 print("Precision:",metrics.precision_score(y_test, predictions))
 print("Recall:",metrics.recall_score(y_test, predictions))
 
+lr_a = metrics.accuracy_score(y_test, predictions)
+
+tn, fp, fn, tp = confusion_matrix(y_test, predictions).ravel()
+specificity = tn / (tn+fp)
+print('specificity', specificity)
+
+sensitivity  = tp / (fn + tp)
+print('sensitivity:', sensitivity)
+
+from sklearn.metrics import roc_auc_score
+roc_lr=roc_auc_score(y_test, predictions)
+print('AUC: ',roc_lr)
 
 tn, fp, fn, tp = confusion_matrix(y_test, predictions).ravel()
 specificity = tn / (tn+fp)
@@ -191,12 +203,18 @@ print("Accuracy:",metrics.accuracy_score(y_test, svm_pred))
 print("Precision:",metrics.precision_score(y_test, svm_pred))
 print("Recall:",metrics.recall_score(y_test, svm_pred))
 
-tn, fp, fn, tp = confusion_matrix(y_test, svm_pred).ravel()
-specificity = tn / (tn+fp)
-print('specificity:', specificity)
 
-sensitivity  = tp / (fn + tp)
-print('sensitivity:', sensitivity)
+a_svm = metrics.accuracy_score(y_test, svm_pred)
+tn, fp, fn, tp = confusion_matrix(y_test, svm_pred).ravel()
+s_specificity = tn / (tn+fp)
+print('specificity:', s_specificity)
+
+s_sensitivity  = tp / (fn + tp)
+print('sensitivity:', s_sensitivity)
+
+from sklearn.metrics import roc_auc_score
+roc_svm=roc_auc_score(y_test, svm_pred)
+print('AUC: ',roc_svm)
 
 
 # random forest 
@@ -214,15 +232,21 @@ print("Accuracy:",metrics.accuracy_score(y_test, rf_pred.round()))
 print("Precision:",metrics.precision_score(y_test, rf_pred.round()))
 print("Recall:",metrics.recall_score(y_test, rf_pred.round()))
 
+
+rf_a = metrics.accuracy_score(y_test, rf_pred.round())
 tn, fp, fn, tp = confusion_matrix(y_test, rf_pred.round()).ravel()
-specificity = tn / (tn+fp)
-print('specificity:', specificity)
-
-sensitivity  = tp / (fn + tp)
-print('sensitivity:', sensitivity)
+rf_specificity = tn / (tn+fp)
+print('specificity:', rf_specificity)
 
 
-'''
+rf_sensitivity  = tp / (fn + tp)
+print('sensitivity:', rf_sensitivity)
+
+from sklearn.metrics import roc_auc_score
+roc_rf=roc_auc_score(y_test, rf_pred.round())
+print('AUC: ',roc_rf)
+
+
 #svm one class classification
 from sklearn.svm import OneClassSVM
 clf = OneClassSVM(gamma='auto').fit(x_train)
@@ -236,39 +260,34 @@ from sklearn import metrics
 cnf_matrix = metrics.confusion_matrix(y_test, c.round())
 print('for SVM one class')
 print("Accuracy:",metrics.accuracy_score(y_test, c.round()))
-print("Precision:",metrics.precision_score(y_test, c, average=None))
-print("Recall:",metrics.recall_score(y_test, c, average=None))
 
-tn, fp, fn, tp = confusion_matrix(y_test, c).ravel()
-specificity = tn / (tn+fp)
-print('specificity:', specificity)
+#print("Precision:",metrics.precision_score(y_test, c, average='micro'))
+#print("Recall:",metrics.recall_score(y_test, c, average='micro'))
 
-sensitivity  = tp / (fn + tp)
-print('sensitivity:', sensitivity)
-'''
+#tn, fp, fn, tp = confusion_matrix(y_test, c).ravel()
+#specificity = tn / (tn+fp)
+#print('specificity:', specificity)
 
+#sensitivity  = tp / (fn + tp)
+#print('sensitivity:', sensitivity)
 
-'''
-for logistic regression:
-Accuracy: 0.9890003626254079
-Precision: 0.34375
-Recall: 0.13580246913580246
-specificity 0.9974365234375
-sensitivity: 0.13580246913580246
+from sklearn.metrics import roc_auc_score
+roc_one=roc_auc_score(y_test, c.round())
+print('AUC: ',roc_one)
 
 
-for SVM
-Accuracy: 0.9903299891212377
-Precision: 0.5263157894736842
-Recall: 0.12345679012345678
-specificity: 0.9989013671875
-sensitivity: 0.12345679012345678
+#make a bar chart
+import matplotlib.pyplot as plt; plt.rcdefaults()
+import numpy as np
+import matplotlib.pyplot as plt
 
 
-for random forrest:
-Accuracy: 0.986703735041702
-Precision: 0.23636363636363636
-Recall: 0.16049382716049382
-specificity: 0.994873046875
-sensitivity: 0.16049382716049382
-'''
+
+#plt.bar(['LR accuracy',' LR specificity',' LR sensitivity','SVM accuracy',' SVM specificity',' SVM sensitivity','RF accuracy',' RF specificity',' RF sensitivity'],[lr_a, specificity, sensitivity,a_svm, s_specificity, s_sensitivity,rf_a, rf_specificity, rf_sensitivity],align='edge', width=0.3)
+
+x_labels = ['LR accuracy',' LR specificity',' LR sensitivity','SVM accuracy',' SVM specificity',' SVM sensitivity','RF accuracy',' RF specificity',' RF sensitivity']
+y_values = [lr_a, specificity, sensitivity,a_svm, s_specificity, s_sensitivity,rf_a, rf_specificity, rf_sensitivity]
+
+plt.bar(x_labels,y_values, align='edge', width=0.3)
+plt.xticks(rotation='vertical')
+
