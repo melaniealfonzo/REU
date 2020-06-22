@@ -160,7 +160,7 @@ df = pd.read_csv(patient_file)
 
 data_process = 2
 if data_process == 1:
-    patient_df = preprocessData(df)
+    patient_df = preprocessData_1(df)
     patient_df = patient_df.drop(['age_is_number', 'AgeRange'], axis=1)
 else:
     patient_df = preprocessData_2(df)
@@ -289,7 +289,7 @@ sensitivity  = tp / (fn + tp)
 print('sensitivity:', sensitivity)
 
 
-'''
+
 false_pos_rate, true_pos_rate, thresholds = roc_curve(error_df_test.True_class, error_df_test.Reconstruction_error)
 roc_auc = auc(false_pos_rate, true_pos_rate,)
 plt.plot(false_pos_rate, true_pos_rate, linewidth=5, label='AUC = %0.3f'% roc_auc)
@@ -301,4 +301,3 @@ plt.title('Receiver operating characteristic curve (ROC)')
 plt.ylabel('True Positive Rate')
 plt.xlabel('False Positive Rate')
 plt.show()
-'''
