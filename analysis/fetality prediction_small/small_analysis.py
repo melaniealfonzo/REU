@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Mon Jun 15 12:12:39 2020
-
-@author: MelanieAlfonzo
-"""
-
 import csv
 import pandas as pd 
 import datetime
@@ -45,30 +37,28 @@ def correlation_analysis(df):
     
 def perpareTrainData(df):
     '''
-    df['date_confirmation']= pd.to_datetime(df['date_confirmation']) 
-    select_day = datetime.datetime(2020, 5, 29) 
-    train_df = df.loc[(df.date_confirmation <= select_day)]
-    test_df = df.loc[(df.date_confirmation > select_day)]
+    select_ID = 1029 
+    train_df = df.loc[(df.ID <= select_ID)]
+    test_df = df.loc[(df.ID > select_ID)]
     '''
+     
+    select_ID = 1029 
+    non_test_df = df.loc[(df.ID <= select_ID)]
+    test_df = df.loc[(df.ID > select_ID)]
     
-    df['date_confirmation']= pd.to_datetime(df['date_confirmation']) 
-    select_day = datetime.datetime(2020, 5, 29) 
-    non_test_df = df.loc[(df.date_confirmation <= select_day)]
-    test_df = df.loc[(df.date_confirmation > select_day)]
-    
-    select_day2 = datetime.datetime(2020, 5, 25) 
-    train_df = non_test_df.loc[(non_test_df.date_confirmation <= select_day2)]
-    valid_df = non_test_df.loc[(non_test_df.date_confirmation > select_day2)]
+    select_ID2 = 723 
+    train_df = non_test_df.loc[(non_test_df.ID <= select_ID2)]
+    valid_df = non_test_df.loc[(non_test_df.ID > select_ID2)]
     
     if data_process == 1:
-        x_train_df =  train_df[['AgeRange_code','latitude', 'longitude', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary']]
-        x_test_df =  test_df[['AgeRange_code','latitude', 'longitude', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary']]
+        x_train_df =  train_df[['AgeRange_code','gender_binary','respiratory','weakness/pain','fever','gastrointestinal','other','nausea','cardiac','high fever','kidney','asymptomatic','diabetes','neuro','NA','hypertension','cancer','ortho','respiratory_CD','cardiacs_cd','kidney_CD','blood','prostate','thyroid']]
+        x_test_df =  test_df[['AgeRange_code','gender_binary','respiratory','weakness/pain','fever','gastrointestinal','other','nausea','cardiac','high fever','kidney','asymptomatic','diabetes','neuro','NA','hypertension','cancer','ortho','respiratory_CD','cardiacs_cd','kidney_CD','blood','prostate','thyroid']]
     else:
-        x_train_df =  train_df[['age','latitude', 'longitude', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary']]
-        x_test_df =  test_df[['age','latitude', 'longitude', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary']]
+        x_train_df =  train_df[['age','gender_binary','respiratory','weakness/pain','fever','gastrointestinal','other','nausea','cardiac','high fever','kidney','asymptomatic','diabetes','neuro','NA','hypertension','cancer','ortho','respiratory_CD','cardiacs_cd','kidney_CD','blood','prostate','thyroid']]
+        x_test_df =  test_df[['age','gender_binary','respiratory','weakness/pain','fever','gastrointestinal','other','nausea','cardiac','high fever','kidney','asymptomatic','diabetes','neuro','NA','hypertension','cancer','ortho','respiratory_CD','cardiacs_cd','kidney_CD','blood','prostate','thyroid']]
 
-    y_train_df =  train_df[['death']]
-    y_test_df = test_df[['death']]
+    y_train_df =  train_df[['death_binary']]
+    y_test_df = test_df[['death_binary']]
     
     death_rate_train = (y_train_df != 0).values.sum() / len(y_train_df)
     death_rate_test = (y_test_df != 0).values.sum() / len(y_test_df)
@@ -132,7 +122,7 @@ def preprocessData_2(df):
     age_number_df = df.loc[df['age_is_number'] == 1]
     return age_number_df
  
-patient_file = "patient records.csv"
+patient_file = "small records.csv"
 df = pd.read_csv(patient_file)
 
 data_process = 2
@@ -282,6 +272,15 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+
+#plt.bar(['LR accuracy',' LR specificity',' LR sensitivity','SVM accuracy',' SVM specificity',' SVM sensitivity','RF accuracy',' RF specificity',' RF sensitivity'],[lr_a, specificity, sensitivity,a_svm, s_specificity, s_sensitivity,rf_a, rf_specificity, rf_sensitivity],align='edge', width=0.3)
+
+#make a bar chart
+import matplotlib.pyplot as plt; plt.rcdefaults()
+import numpy as np
+import matplotlib.pyplot as plt
+
+
 encode_A= 0.9574519521334461
 encode_Precision= 0.0670926517571885
 encode_Recall= 0.25925925925925924
@@ -320,5 +319,3 @@ plt.show
 
 metric = ['Accuracy', 'Specificity', 'Sensitivity', 'AUC']
 plt.legend(metric)
-
-
