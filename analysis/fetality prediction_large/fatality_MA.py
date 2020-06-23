@@ -282,12 +282,43 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+encode_A= 0.9574519521334461
+encode_Precision= 0.0670926517571885
+encode_Recall= 0.25925925925925924
+encode_spe= 0.96435546875
+encode_sen= 0.25925925925925924
+encode_AUC=0.783
 
-#plt.bar(['LR accuracy',' LR specificity',' LR sensitivity','SVM accuracy',' SVM specificity',' SVM sensitivity','RF accuracy',' RF specificity',' RF sensitivity'],[lr_a, specificity, sensitivity,a_svm, s_specificity, s_sensitivity,rf_a, rf_specificity, rf_sensitivity],align='edge', width=0.3)
 
-x_labels = ['LR accuracy',' LR specificity',' LR sensitivity','SVM accuracy',' SVM specificity',' SVM sensitivity','RF accuracy',' RF specificity',' RF sensitivity']
-y_values = [lr_a, specificity, sensitivity,a_svm, s_specificity, s_sensitivity,rf_a, rf_specificity, rf_sensitivity]
+barWidth = 0.2
 
-plt.bar(x_labels,y_values, align='edge', width=0.3)
-plt.xticks(rotation='vertical')
+#set height
+bars1 = [lr_a, a_svm, rf_a, encode_A]
+bars2 = [specificity, s_specificity, rf_specificity,encode_spe]
+bars3 = [sensitivity, s_sensitivity, rf_sensitivity, encode_sen]
+bars4 = [roc_lr, roc_svm, roc_rf, encode_AUC]
+
+
+#set position of bar on X axis 
+r1 = np.arange(len(bars1))
+r2 = [x + barWidth for x in r1]
+r3 = [x + barWidth for x in r2]
+r4 = [x + barWidth for x in r3]
+
+
+# Make the plot
+plt.bar(r1, bars1, color='b', width=barWidth, edgecolor='white', label='var1')
+plt.bar(r2, bars2, color='r', width=barWidth, edgecolor='white', label='var2')
+plt.bar(r3, bars3, color='g', width=barWidth, edgecolor='white', label='var3')
+plt.bar(r4, bars4, color='y', width=barWidth, edgecolor='white', label='var4')
+
+        
+plt.xticks([r + barWidth for r in range(len(bars1))], ['Logistic Regression','SVM','Random Forrest','Auto Encoder'])
+
+plt.show
+
+
+metric = ['Accuracy', 'Specificity', 'Sensitivity', 'AUC']
+plt.legend(metric)
+
 
