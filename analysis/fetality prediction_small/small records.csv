@@ -1,4 +1,4 @@
-ID,Age,ChronicDiseaseQ,gender_binary,respiratory,weakness/pain,fever,gastrointestinal,other,nausea,cardiac,high fever,kidney,asymptomatic,diabetes,neuro,NA,hypertension,cancer,ortho,respiratory_CD,cardiacs_cd,kidney_CD,blood,prostate,thyroid,death_binary
+ID,age,ChronicDiseaseQ,gender_binary,respiratory,weakness/pain,fever,gastrointestinal,other,nausea,cardiac,high fever,kidney,asymptomatic,diabetes,neuro,NA,hypertension,cancer,ortho,respiratory_CD,cardiacs_cd,kidney_CD,blood,prostate,thyroid,death_binary
 0,48,1,1,1,1,1,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1
 2,58,0,0,1,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1
 3,66,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1

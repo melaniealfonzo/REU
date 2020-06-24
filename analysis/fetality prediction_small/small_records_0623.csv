@@ -1,4 +1,4 @@
-ID,Age,DateOfOnsetSymptoms,ChronicDiseaseQ,gender_binary,death_binary,respiratory,weakness/pain,fever,gastrointestinal,other,nausea,cardiac,high fever,kidney,asymptomatic,diabetes,neuro,NA,hypertension,cancer,ortho,respiratory_CD,cardiacs_cd,kidney_CD,blood,prostate,thyroid,Latitude,Longitiude
+ID,age,DateOfOnsetSymptoms,ChronicDiseaseQ,gender_binary,death_binary,respiratory,weakness/pain,fever,gastrointestinal,other,nausea,cardiac,high fever,kidney,asymptomatic,diabetes,neuro,NA,hypertension,cancer,ortho,respiratory_CD,cardiacs_cd,kidney_CD,blood,prostate,thyroid,Latitude,Longitiude
 0,48,"2019, 12, 10",1,1,1,1,1,1,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,30.62506,114.3421
 2,58,"2019, 12, 22",0,0,1,1,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,30.62506,114.3421
 3,66,"2019, 12, 22",0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,30.62506,114.3421
@@ -1324,7 +1324,7 @@ ID,Age,DateOfOnsetSymptoms,ChronicDiseaseQ,gender_binary,death_binary,respirator
 1323,61,"2020, 4, 5",0,1,0,1,1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,43.84315,121.5555
 1324,69,"2020, 4, 5",0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,30.62506,114.3421
 1325,65,"2020, 4, 5",0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,31.17298,111.5727
-1326,53,"Interval2020, 1, 1, 2020, 1, 12",0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,30.62506,114.3421
+1326,53,"2020, 1, 12",0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,30.62506,114.3421
 1327,70,"2020, 4, 5",0,1,1,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,30.62506,114.3421
 1328,80,"2020, 4, 5",0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,-21.1335,55.53273
 1329,42,"2020, 4, 5",0,1,0,0,0,0,0,0,0,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,3.75614,8.77948
