@@ -280,22 +280,13 @@ import matplotlib.pyplot as plt; plt.rcdefaults()
 import numpy as np
 import matplotlib.pyplot as plt
 
-
-encode_A= 0.9574519521334461
-encode_Precision= 0.0670926517571885
-encode_Recall= 0.25925925925925924
-encode_spe= 0.96435546875
-encode_sen= 0.25925925925925924
-encode_AUC=0.783
-
-
 barWidth = 0.2
 
 #set height
-bars1 = [lr_a, a_svm, rf_a, encode_A]
-bars2 = [specificity, s_specificity, rf_specificity,encode_spe]
-bars3 = [sensitivity, s_sensitivity, rf_sensitivity, encode_sen]
-bars4 = [roc_lr, roc_svm, roc_rf, encode_AUC]
+bars1 = [lr_a, a_svm, rf_a]
+bars2 = [specificity, s_specificity, rf_specificity]
+bars3 = [sensitivity, s_sensitivity, rf_sensitivity]
+bars4 = [roc_lr, roc_svm, roc_rf]
 
 
 #set position of bar on X axis 
@@ -306,13 +297,13 @@ r4 = [x + barWidth for x in r3]
 
 
 # Make the plot
-plt.bar(r1, bars1, color='b', width=barWidth, edgecolor='white', label='var1')
-plt.bar(r2, bars2, color='r', width=barWidth, edgecolor='white', label='var2')
-plt.bar(r3, bars3, color='g', width=barWidth, edgecolor='white', label='var3')
-plt.bar(r4, bars4, color='y', width=barWidth, edgecolor='white', label='var4')
+plt.bar(r1, bars1, color='#87CEFA', width=barWidth, edgecolor='white', label='var1')
+plt.bar(r2, bars2, color='#FFC1C1', width=barWidth, edgecolor='white', label='var2')
+plt.bar(r3, bars3, color='#FFE1FF', width=barWidth, edgecolor='white', label='var3')
+plt.bar(r4, bars4, color='#27408B', width=barWidth, edgecolor='white', label='var4')
 
         
-plt.xticks([r + barWidth for r in range(len(bars1))], ['Logistic Regression','SVM','Random Forrest','Auto Encoder'])
+plt.xticks([r + barWidth for r in range(len(bars1))], ['Logistic Regression','SVM','Random Forrest'])
 
 plt.show
 
