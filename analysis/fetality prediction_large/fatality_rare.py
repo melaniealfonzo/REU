@@ -132,13 +132,13 @@ def perpareTrainData(df):
     valid_df = non_test_df.loc[(non_test_df.date_confirmation > select_day2)]
     
     if data_process == 1:
-        train_df =  train_df[['AgeRange_code','latitude', 'longitude', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary','death']]
-        test_df =  test_df[['AgeRange_code','latitude', 'longitude', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary','death']]
-        valid_df =  valid_df[['AgeRange_code','latitude', 'longitude', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary','death']]
+        train_df =  train_df[['AgeRange_code','chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary','death']]
+        test_df =  test_df[['AgeRange_code','chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary','death']]
+        valid_df =  valid_df[['AgeRange_code', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary','death']]
     else:
-        train_df =  train_df[['age','latitude', 'longitude', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary','death']]
-        test_df =  test_df[['age','latitude', 'longitude', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary','death']]
-        valid_df =  valid_df[['age','latitude', 'longitude', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary','death']]
+        train_df =  train_df[['age', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary','death']]
+        test_df =  test_df[['age','chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary','death']]
+        valid_df =  valid_df[['age', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary','death']]
 
     y_train_df =  train_df[['death']]
     y_test_df = test_df[['death']]
@@ -174,8 +174,8 @@ df_train_1 = df_train.loc[df_train['death'] == 1]
 df_train_0_x = df_train_0.drop(['death'], axis=1)
 df_train_1_x = df_train_1.drop(['death'], axis=1)
 
-df_valid_0 = df_valid.loc[df['death'] == 0]
-df_valid_1 = df_valid.loc[df['death'] == 1]
+df_valid_0 = df_valid.loc[df_valid['death'] == 0]
+df_valid_1 = df_valid.loc[df_valid['death'] == 1]
 df_valid_0_x = df_valid_0.drop(['death'], axis=1)
 df_valid_1_x = df_valid_1.drop(['death'], axis=1)
 
@@ -195,7 +195,7 @@ df_test_x_rescaled = scaler.transform(df_test.drop(['death'], axis = 1))
 nb_epoch = 200
 batch_size = 32
 input_dim = df_train_0_x_rescaled.shape[1] #num of predictor variables, 
-encoding_dim = 16
+encoding_dim = 4
 hidden_dim = int(encoding_dim / 2)
 learning_rate = 1e-3
 
@@ -212,8 +212,8 @@ autoencoder.compile(metrics=['accuracy'],
                     loss='mean_squared_error',
                     optimizer='adam')
 
-'''
-earlyStopping = EarlyStopping(monitor='val_loss', patience=10, verbose=0, mode='min')
+
+#earlyStopping = EarlyStopping(monitor='val_loss', patience=10, verbose=0, mode='min')
 mcp_save = ModelCheckpoint('autoencoder_classifier.h5', save_best_only=True, monitor='val_loss', mode='min')
 reduce_lr_loss = ReduceLROnPlateau(monitor='val_loss', factor=0.1, patience=7, verbose=1, epsilon=1e-4, mode='min')
 
@@ -224,9 +224,9 @@ history = autoencoder.fit(df_train_0_x_rescaled, df_train_0_x_rescaled,
                     shuffle=True,
                     validation_data=(df_valid_0_x_rescaled, df_valid_0_x_rescaled),
                     verbose=1,
-                    callbacks=[earlyStopping, mcp_save, reduce_lr_loss]
+                    callbacks=[ mcp_save, reduce_lr_loss]
                     ).history
-'''
+
 
 autoencoder.load_weights("autoencoder_classifier.h5")
 #classification
@@ -251,7 +251,7 @@ mse = np.mean(np.power(df_test_x_rescaled - test_x_predictions, 2), axis=1)
 error_df_test = pd.DataFrame({'Reconstruction_error': mse,
                         'True_class': df_test['death']})
 error_df_test = error_df_test.reset_index()
-threshold_fixed = 0.001
+threshold_fixed = 0.04
 groups = error_df_test.groupby('True_class')
 fig, ax = plt.subplots()
 for name, group in groups:
@@ -301,3 +301,7 @@ plt.title('Receiver operating characteristic curve (ROC)')
 plt.ylabel('True Positive Rate')
 plt.xlabel('False Positive Rate')
 plt.show()
+
+from sklearn.metrics import roc_auc_score
+roc_one=roc_auc_score(df_test['death'], pred_y)
+print('AUC: ',roc_one)

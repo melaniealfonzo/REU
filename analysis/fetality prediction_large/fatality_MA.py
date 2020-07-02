@@ -61,11 +61,11 @@ def perpareTrainData(df):
     valid_df = non_test_df.loc[(non_test_df.date_confirmation > select_day2)]
     
     if data_process == 1:
-        x_train_df =  train_df[['AgeRange_code','latitude', 'longitude', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary']]
-        x_test_df =  test_df[['AgeRange_code','latitude', 'longitude', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary']]
+        x_train_df =  train_df[['AgeRange_code', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary']]
+        x_test_df =  test_df[['AgeRange_code','chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary']]
     else:
-        x_train_df =  train_df[['age','latitude', 'longitude', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary']]
-        x_test_df =  test_df[['age','latitude', 'longitude', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary']]
+        x_train_df =  train_df[['age', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary']]
+        x_test_df =  test_df[['age','chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary']]
 
     y_train_df =  train_df[['death']]
     y_test_df = test_df[['death']]
@@ -160,6 +160,7 @@ print(lr_score)
 
 #use confusion matrix to get all 3
 from sklearn import metrics
+from sklearn.metrics import recall_score, classification_report, auc, roc_curve
 
 cnf_matrix = metrics.confusion_matrix(y_test, predictions)
 print('for logistic regression:')
@@ -178,7 +179,7 @@ print('sensitivity:', sensitivity)
 
 from sklearn.metrics import roc_auc_score
 roc_lr=roc_auc_score(y_test, predictions)
-print('AUC: ',roc_lr)
+print('ROC_AUC: ',roc_lr)
 
 tn, fp, fn, tp = confusion_matrix(y_test, predictions).ravel()
 specificity = tn / (tn+fp)
@@ -187,6 +188,9 @@ print('specificity', specificity)
 sensitivity  = tp / (fn + tp)
 print('sensitivity:', sensitivity)
 
+false_positive_rate, true_positive_rate, thresholds = roc_curve(y_test, model.predict_proba(x_test)[:,1])
+auc = auc(false_positive_rate, true_positive_rate)
+print('AUC: ',auc)
 
 #SVM 
 from sklearn import svm
@@ -287,9 +291,17 @@ encode_Precision= 0.0670926517571885
 encode_Recall= 0.25925925925925924
 encode_spe= 0.96435546875
 encode_sen= 0.25925925925925924
-encode_AUC=0.783
+encode_AUC=0.643
 
-
+'''
+Accuracy: 0.30690197026471655
+Precision: 0.013259858791114172
+Recall: 0.9506172839506173
+specificity: 0.300537109375
+sensitivity: 0.9506172839506173
+AUC= 0.855
+AUC = 0.625
+'''
 barWidth = 0.2
 
 #set height
@@ -313,7 +325,7 @@ plt.bar(r3, bars3, color='g', width=barWidth, edgecolor='white', label='var3')
 plt.bar(r4, bars4, color='y', width=barWidth, edgecolor='white', label='var4')
 
         
-plt.xticks([r + barWidth for r in range(len(bars1))], ['Logistic Regression','SVM','Random Forrest','Auto Encoder'])
+plt.xticks([r + barWidth for r in range(len(bars1))], ['Logistic Regression','SVM','Random Forrest','DNN'])
 
 plt.show
 

@@ -1,4 +1,12 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Jun 15 12:12:39 2020
 
+@author: MelanieAlfonzo
+"""
+
+import csv
 import pandas as pd 
 import datetime
 import numpy as np
@@ -12,7 +20,7 @@ import tensorflow as tf
 from keras.models import Model, load_model
 from keras.layers import Input, Dense
 from keras.callbacks import ModelCheckpoint, TensorBoard
-from keras import regularizers
+from keras import regularizers,Sequential
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, precision_recall_curve
@@ -23,6 +31,11 @@ seed(1)
 from tensorflow import set_random_seed
 from keras.callbacks import EarlyStopping
 from keras.callbacks import ReduceLROnPlateau
+
+from DenseTied import DenseTied
+from WeightsOrthogonalityConstraint import WeightsOrthogonalityConstraint
+from UncorrelatedFeaturesConstraint import UncorrelatedFeaturesConstraint
+from keras.constraints import UnitNorm, Constraint
 
 set_random_seed(2)
 SEED = 123 #used to help randomly select the data points
@@ -114,57 +127,27 @@ def preprocessData_2(df):
     return age_number_df
 
 def perpareTrainData(df):
-    df_d = df[df['death_binary'] == 1]
-    df_a = df[df['death_binary'] == 0]
+    df['date_confirmation']= pd.to_datetime(df['date_confirmation']) 
+    select_day = datetime.datetime(2020, 5, 29) 
+    non_test_df = df.loc[(df.date_confirmation <= select_day)]
+    test_df = df.loc[(df.date_confirmation > select_day)]
     
-    len_d = len(df_d.index)
-    len_a = len(df_a.index)
-    
-    test_pos_d =  int(len_d*0.7)
-    test_pos_a =  int(len_a*0.7)
-    
-    
-    df_a_nontest = df_a[:test_pos_a]
-    df_a_test = df_a[test_pos_a:]
-    
-    df_d_nontest = df_d[:test_pos_d]
-    df_d_test = df_d[test_pos_d:]
-    
-    test_df = pd.concat([df_a_test, df_d_test], axis=0)
-    
-    
-    valid_pos_d =  int(test_pos_d*0.7)
-    valid_pos_a =  int(test_pos_a*0.7)
-    
-    df_a_train = df_a_nontest[:valid_pos_a]
-    df_a_valid = df_a_nontest[valid_pos_a:]
-    
-    df_d_train = df_d_nontest[:valid_pos_d]
-    df_d_valid = df_d_nontest[valid_pos_d:]
-    
-    train_df = pd.concat([df_a_train, df_d_train], axis=0)
-    valid_df = pd.concat([df_a_valid, df_d_valid], axis=0)
-    
-    
-    print(train_df.shape)
-    print(valid_df.shape)
-    print(test_df.shape)
-    
+    select_day2 = datetime.datetime(2020, 5, 25) 
+    train_df = non_test_df.loc[(non_test_df.date_confirmation <= select_day2)]
+    valid_df = non_test_df.loc[(non_test_df.date_confirmation > select_day2)]
     
     if data_process == 1:
-        train_df =  train_df[['AgeRange_code','gender_binary','respiratory','weakness/pain','fever','gastrointestinal','other','nausea','cardiac','high fever','kidney','asymptomatic','diabetes','neuro','NA','hypertension','cancer','ortho','respiratory_CD','cardiacs_cd','kidney_CD','blood','prostate','thyroid', 'death_binary']]
-        test_df =  test_df[['AgeRange_code','gender_binary','respiratory','weakness/pain','fever','gastrointestinal','other','nausea','cardiac','high fever','kidney','asymptomatic','diabetes','neuro','NA','hypertension','cancer','ortho','respiratory_CD','cardiacs_cd','kidney_CD','blood','prostate','thyroid', 'death_binary']]
-        valid_df =  valid_df[['AgeRange_code','gender_binary','respiratory','weakness/pain','fever','gastrointestinal','other','nausea','cardiac','high fever','kidney','asymptomatic','diabetes','neuro','NA','hypertension','cancer','ortho','respiratory_CD','cardiacs_cd','kidney_CD','blood','prostate','thyroid', 'death_binary']]
-        
+        train_df =  train_df[['AgeRange_code','chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary','death']]
+        test_df =  test_df[['AgeRange_code','chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary','death']]
+        valid_df =  valid_df[['AgeRange_code', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary','death']]
     else:
-        train_df =  train_df[['age','gender_binary','respiratory','weakness/pain','fever','gastrointestinal','other','nausea','cardiac','high fever','kidney','asymptomatic','diabetes','neuro','NA','hypertension','cancer','ortho','respiratory_CD','cardiacs_cd','kidney_CD','blood','prostate','thyroid', 'death_binary']]
-        test_df =  test_df[['age','gender_binary','respiratory','weakness/pain','fever','gastrointestinal','other','nausea','cardiac','high fever','kidney','asymptomatic','diabetes','neuro','NA','hypertension','cancer','ortho','respiratory_CD','cardiacs_cd','kidney_CD','blood','prostate','thyroid', 'death_binary']]
-        valid_df =  valid_df[['age','gender_binary','respiratory','weakness/pain','fever','gastrointestinal','other','nausea','cardiac','high fever','kidney','asymptomatic','diabetes','neuro','NA','hypertension','cancer','ortho','respiratory_CD','cardiacs_cd','kidney_CD','blood','prostate','thyroid', 'death_binary']]
-  
+        train_df =  train_df[['age', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary','death']]
+        test_df =  test_df[['age','chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary','death']]
+        valid_df =  valid_df[['age', 'chronic_disease_binary','travel_history_binary','combine_symptoms', 'gender_binary','death']]
 
-    y_train_df =  train_df[['death_binary']]
-    y_test_df = test_df[['death_binary']]
-    y_valid_df = valid_df[['death_binary']]
+    y_train_df =  train_df[['death']]
+    y_test_df = test_df[['death']]
+    y_valid_df = valid_df[['death']]
     
     death_rate_train = (y_train_df != 0).values.sum() / len(y_train_df)
     death_rate_test = (y_test_df != 0).values.sum() / len(y_test_df)
@@ -173,27 +156,22 @@ def perpareTrainData(df):
     print(death_rate_train)
     print(death_rate_valid)
     print(death_rate_test)
-
-    train_df = train_df.rename(columns={"death_binary" : "death"})
-    valid_df = valid_df.rename(columns={"death_binary" : "death"})
-    test_df = test_df.rename(columns={"death_binary" : "death"})
     
     return train_df, valid_df, test_df
 
     
-patient_file = "small_records_0623.csv"
+patient_file = "patient records.csv"
 df = pd.read_csv(patient_file)
 
-data_process = 1
+data_process = 2
 if data_process == 1:
     patient_df = preprocessData_1(df)
-    #patient_df = patient_df.drop(['age_is_number', 'AgeRange'], axis=1)
+    patient_df = patient_df.drop(['age_is_number', 'AgeRange'], axis=1)
 else:
     patient_df = preprocessData_2(df)
-    #patient_df = patient_df.drop(['age_is_number'], axis=1)
+    patient_df = patient_df.drop(['age_is_number'], axis=1)
 #correlation_analysis(patient_df)
 #drop 
-
 df_train, df_valid, df_test = perpareTrainData(patient_df)
 
 df_train_0 = df_train.loc[df_train['death'] == 0]
@@ -211,7 +189,6 @@ df_test_1 = df_test.loc[df_test['death'] == 1]
 df_test_0_x = df_test_0.drop(['death'], axis=1)
 df_test_1_x = df_test_1.drop(['death'], axis=1)
 
-
 scaler = StandardScaler().fit(df_train_0_x)
 df_train_0_x_rescaled = scaler.transform(df_train_0_x)
 df_valid_0_x_rescaled = scaler.transform(df_valid_0_x)
@@ -219,16 +196,15 @@ df_valid_x_rescaled = scaler.transform(df_valid.drop(['death'], axis = 1))
 df_test_0_x_rescaled = scaler.transform(df_test_0_x)
 df_test_x_rescaled = scaler.transform(df_test.drop(['death'], axis = 1))
 
-
-'''
 #train
-nb_epoch = 1000
+nb_epoch = 50
 batch_size = 32
 input_dim = df_train_0_x_rescaled.shape[1] #num of predictor variables, 
-encoding_dim = 8
+encoding_dim = 4
 hidden_dim = int(encoding_dim / 2)
 learning_rate = 1e-3
 
+'''
 input_layer = Input(shape=(input_dim, ))
 encoder = Dense(encoding_dim, activation="relu", activity_regularizer=regularizers.l1(learning_rate))(input_layer)
 encoder = Dense(hidden_dim, activation="relu")(encoder)
@@ -237,9 +213,28 @@ decoder = Dense(encoding_dim, activation="relu")(decoder)
 decoder = Dense(input_dim, activation="linear")(decoder)
 autoencoder = Model(inputs=input_layer, outputs=decoder)
 autoencoder.summary()
+'''
 
 
-autoencoder.compile(metrics=['mse'],
+encoder1 = Dense(encoding_dim, activation="linear", input_shape=(input_dim,), use_bias = True, kernel_regularizer=WeightsOrthogonalityConstraint(encoding_dim, weightage=1., axis=0), kernel_constraint=UnitNorm(axis=0)) 
+decoder1 = DenseTied(input_dim, activation="linear", tied_to=encoder1, use_bias = False)
+
+encoder2 = Dense(hidden_dim, activation="relu", input_shape=(encoding_dim,), use_bias = True, kernel_regularizer=WeightsOrthogonalityConstraint(encoding_dim, weightage=1., axis=0), kernel_constraint=UnitNorm(axis=0)) 
+decoder2 = DenseTied(encoding_dim, activation="relu", tied_to=encoder2, use_bias = False)
+
+
+autoencoder = Sequential()
+autoencoder.add(encoder1)
+autoencoder.add(encoder2)
+autoencoder.add(decoder2)
+
+autoencoder.add(decoder1)
+autoencoder.summary()
+
+
+
+
+autoencoder.compile(metrics=['accuracy'],
                     loss='mean_squared_error',
                     optimizer='adam')
 
@@ -259,7 +254,7 @@ history = autoencoder.fit(df_train_0_x_rescaled, df_train_0_x_rescaled,
                     ).history
 
 
-autoencoder.load_weights("autoencoder_classifier.h5")
+#autoencoder.load_weights("autoencoder_classifier.h5")
 #classification
 valid_x_predictions = autoencoder.predict(df_valid_x_rescaled)
 mse = np.mean(np.power(df_valid_x_rescaled - valid_x_predictions, 2), axis=1)
@@ -282,7 +277,7 @@ mse = np.mean(np.power(df_test_x_rescaled - test_x_predictions, 2), axis=1)
 error_df_test = pd.DataFrame({'Reconstruction_error': mse,
                         'True_class': df_test['death']})
 error_df_test = error_df_test.reset_index()
-threshold_fixed = 4
+threshold_fixed = 0.0014
 groups = error_df_test.groupby('True_class')
 fig, ax = plt.subplots()
 for name, group in groups:
@@ -319,9 +314,7 @@ print('specificity:', specificity)
 sensitivity  = tp / (fn + tp)
 print('sensitivity:', sensitivity)
 
-from sklearn.metrics import roc_auc_score
-roc_rf=roc_auc_score(error_df_test.True_class, pred_y)
-print('AUC: ',roc_rf)
+
 
 false_pos_rate, true_pos_rate, thresholds = roc_curve(error_df_test.True_class, error_df_test.Reconstruction_error)
 roc_auc = auc(false_pos_rate, true_pos_rate,)
@@ -334,29 +327,7 @@ plt.title('Receiver operating characteristic curve (ROC)')
 plt.ylabel('True Positive Rate')
 plt.xlabel('False Positive Rate')
 plt.show()
-'''
 
-#onesvm
-from sklearn.svm import OneClassSVM
-from sklearn import metrics
 from sklearn.metrics import roc_auc_score
-clf = OneClassSVM(nu=0.1, kernel="rbf", gamma=0.1)
-clf.fit(df_train_0_x_rescaled)
-y_pred_train = clf.predict(df_train_0_x_rescaled)
-y_pred_test = clf.predict(df_test_x_rescaled)
-
-pred_y = [1 if e == -1 else 0 for e in y_pred_test]
-conf_matrix = confusion_matrix(df_test['death'], pred_y)
-cnf_matrix = metrics.confusion_matrix(df_test['death'], pred_y)
-tn, fp, fn, tp = confusion_matrix(df_test['death'], pred_y).ravel()
-specificity = tn / (tn+fp)
-sensitivity  = tp / (fn + tp)
-roc_rf=roc_auc_score(df_test['death'], pred_y)
-
-print('for onesvm:')
-print("Accuracy:",metrics.accuracy_score(df_test['death'], pred_y))
-print("Precision:",metrics.precision_score(df_test['death'], pred_y))
-print("Recall:",metrics.recall_score(df_test['death'], pred_y))
-print('specificity:', specificity)
-print('sensitivity:', sensitivity)
-print('AUC: ',roc_rf)
+roc_one=roc_auc_score(df_test['death'], pred_y)
+print('AUC: ',roc_one)

@@ -163,6 +163,7 @@ else:
 #correlation_analysis(patient_df)
 x_train, x_test, y_train, y_test = perpareTrainData(patient_df)
 
+
 #logistic regression
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import confusion_matrix
