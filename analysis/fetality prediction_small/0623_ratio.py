@@ -240,6 +240,7 @@ print('AUC: ',roc_rf)
 print('********************************')
 print('')
 
+rf_a = metrics.accuracy_score(y_test, rf_pred.round())
 '''
 for onesvm:
 Accuracy: 0.8169014084507042
@@ -266,27 +267,30 @@ import matplotlib.pyplot as plt; plt.rcdefaults()
 import numpy as np
 import matplotlib.pyplot as plt
 
-barWidth = 0.2
+barWidth = 0.15
 
 #set height
-bars1 = [lr_a, a_svm, rf_a]
-bars2 = [specificity, s_specificity, rf_specificity]
-bars3 = [sensitivity, s_sensitivity, rf_sensitivity]
-bars4 = [roc_lr, roc_svm, roc_rf]
+bars1 = [metrics.accuracy_score(y_test, predictions),metrics.accuracy_score(y_test, svm_pred),rf_a, 0.8169014084507042, 0.9976525821596244 ]
+bars2 = [specificity, s_specificity, rf_specificity, 0.8020565552699229, 1]
+bars3 = [sensitivity, s_sensitivity, rf_sensitivity,0.972972972972973,0.972972972972973  ]
+bars4 = [roc_lr, roc_svm, roc_rf, 0.8875147641214479, 0.9864864864864865]
 
 #set position of bar on X axis 
 r1 = np.arange(len(bars1))
 r2 = [x + barWidth for x in r1]
 r3 = [x + barWidth for x in r2]
 r4 = [x + barWidth for x in r3]
+r5 = [x + barWidth for x in r4]
+r6 = [x + barWidth for x in r5]
 
 # Make the plot
 plt.bar(r1, bars1, color='#87CEFA', width=barWidth, edgecolor='white', label='var1')
 plt.bar(r2, bars2, color='#FFC1C1', width=barWidth, edgecolor='white', label='var2')
 plt.bar(r3, bars3, color='#FFE1FF', width=barWidth, edgecolor='white', label='var3')
-plt.bar(r4, bars4, color='#27408B', width=barWidth, edgecolor='white', label='var4')     
-plt.xticks([r + barWidth for r in range(len(bars1))], ['Logistic Regression','SVM','Random Forrest'])
+plt.bar(r4, bars4, color='#27408B', width=barWidth, edgecolor='white', label='var4') 
+plt.xticks([r + barWidth for r in range(len(bars1))], ['Logistic Regression','SVM','Random Forrest', 'SVM One Class', 'Autoencoder'], rotation = 'vertical')
 plt.show
 
 metric = ['Accuracy', 'Specificity', 'Sensitivity', 'AUC']
-plt.legend(metric)
+plt.legend(metric, loc = 7)
+
